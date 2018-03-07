@@ -17,15 +17,10 @@ int main() {
     print_current();
     while (1) {
         if (elev_get_floor_sensor_signal() == get_next_floor()){
-            stop();
+            stop_floor();
         }
-        if (elev_get_stop_signal()) {
-            for (int floor = 0; floor < N_FLOORS; floor++){
-                delete_order(floor);
-            }
-            elev_set_stop_lamp(1);
-            elev_set_motor_direction(DIRN_STOP);
-            break;
+        if(elev_get_stop_signal()){
+            stop_button();
         }
         print_matrix();
         print_current();

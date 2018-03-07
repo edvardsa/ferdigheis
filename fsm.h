@@ -8,7 +8,8 @@ void start();
 
 void move();
 
-void stop();
+void stop_floor();
 
+void stop_button();
 
 #endif

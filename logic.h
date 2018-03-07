@@ -36,6 +36,7 @@ void delete_order(int floor);
 //calls check_order_below() or check_order_below() based on current direction, last direction and current floor
 void set_priority();
 
+int sum_of_orders();
 /*
 ____HELPFUNCTIONS FOR SYSTEMTESTING____
 */

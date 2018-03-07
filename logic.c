@@ -185,7 +185,7 @@ void print_matrix(){
 }
 
 int sum_of_orders(){
-	int sum =0;
+	int sum = 0;
 	for(int i = 0; i < 3; i++){
 		for (int j= 0; j <4; j++){
 			sum += order_matrix[i][j];
