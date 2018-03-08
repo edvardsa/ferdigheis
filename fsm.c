@@ -10,13 +10,8 @@
 
 
 void move(){
-    if(get_next_floor()== get_current_floor()){
-        set_current_dir(DIRN_STOP);
-        elev_set_motor_direction(DIRN_STOP);
-        return;
-    }
 
-    else if (get_next_floor() > get_current_floor()){
+    if (get_next_floor() > get_current_floor()){
         set_current_dir(DIRN_UP);
         elev_set_motor_direction(DIRN_UP);    
     }
@@ -53,9 +48,7 @@ void move(){
         set_priority();
        
     }
-    set_priority();
-    set_last_dir(get_current_dir());
-    set_current_dir(DIRN_STOP);
+    
     if (elev_get_floor_sensor_signal() != -1){
         set_current_floor(elev_get_floor_sensor_signal());
         elev_set_floor_indicator(elev_get_floor_sensor_signal());
@@ -83,23 +76,25 @@ void start(){
 
 
 void stop_floor(){
+    printf("In stop_floor \n");
+    if (get_current_dir() != DIRN_STOP){
+        set_last_dir(get_current_dir());
+    }   
+    set_current_dir(DIRN_STOP);
     elev_set_motor_direction(DIRN_STOP);
-    elev_set_door_open_lamp(1);
     delete_order(get_current_floor());
+    elev_set_door_open_lamp(1);
     time_delay(3);
     elev_set_door_open_lamp(0);
-    while (sum_of_orders() == 0){
-        if (elev_get_stop_signal()){
-            return;
-        }
-        check_order();
-    }
-    set_priority();
+    idle();
+    printf("out of stop_floor \n");
 }
 
 
 void stop_button() {
-    set_last_dir(get_current_dir());
+    if (get_current_dir() != DIRN_STOP){
+        set_last_dir(get_current_dir());
+    }
     set_current_dir(DIRN_STOP);
     elev_set_motor_direction(DIRN_STOP);
     set_next_floor(get_current_floor());
@@ -108,18 +103,19 @@ void stop_button() {
     }
     while(elev_get_stop_signal()){ //set light while button is pressed
         elev_set_stop_lamp(1);
+        if (elev_get_floor_sensor_signal() != -1){
+            elev_set_door_open_lamp(1);
+        }
     }
     elev_set_stop_lamp(0);
     if(elev_get_floor_sensor_signal() != -1) {
-        elev_set_door_open_lamp(1);
         time_delay(3);
         elev_set_door_open_lamp(0);
+    }
 
-    }
-    while(sum_of_orders() == 0) {
-        check_order();
-    }
-    set_priority();
+    idle();
+    
+    //alorithm for choosing direction when between floors if received order is last registered floor
     if (get_current_floor() == get_next_floor()){
         if (get_last_dir() == DIRN_UP && elev_get_floor_sensor_signal() == -1 && get_current_floor() != 3){
             set_current_floor(get_current_floor() +1);
@@ -128,5 +124,17 @@ void stop_button() {
             set_current_floor(get_current_floor() - 1);
         }
     }
+    
+}
+
+
+void idle(){
+    while(sum_of_orders() == 0) {
+            check_order();
+            if (elev_get_stop_signal()){
+                return;
+            }
+        }
+    set_priority();
 }
 

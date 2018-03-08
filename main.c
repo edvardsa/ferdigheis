@@ -29,6 +29,8 @@ int main() {
         if(sum_of_orders() > 0){
             move();
         }
+        printf("current dir: %d \n",get_current_dir());
+        printf("last dir: %d \n",get_last_dir());
     }
     return 0;
 }

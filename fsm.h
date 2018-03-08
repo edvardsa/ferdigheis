@@ -12,4 +12,6 @@ void stop_floor();
 
 void stop_button();
 
+void idle();
+
 #endif

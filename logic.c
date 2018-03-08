@@ -119,10 +119,12 @@ void delete_order(int floor){
 
 
 void time_delay(int number_of_seconds){
+	printf("In the delay function \n");
     clock_t start_time = clock();
     while ( (clock() - start_time)/CLOCKS_PER_SEC < number_of_seconds){
     	check_order();
         if (elev_get_stop_signal()){
+        	printf("breaking\n");
             break;
         }
     }
