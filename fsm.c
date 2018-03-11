@@ -1,5 +1,5 @@
 
-// her kommer koden knytt til tilstandsmaskinen
+// implementation of the state machine
 #include "fsm.h"
 #include "logic.h"
 #include "elev.h"
@@ -21,7 +21,7 @@ void move(){
         elev_set_motor_direction(DIRN_DOWN);    
     }
 
-    while(elev_get_floor_sensor_signal() != get_next_floor()) {
+    while(elev_get_floor_sensor_signal() != get_next_floor()) { //drives the elevator until next floor is reached while updating indicator and current floor
         if (elev_get_stop_signal() == 1){
             return;
         }
@@ -77,7 +77,7 @@ void start(){
 
 void stop_floor(){
     printf("In stop_floor \n");
-    if (get_current_dir() != DIRN_STOP){
+    if (get_current_dir() != DIRN_STOP){ //prevents last_dir to be set to dirn_stop
         set_last_dir(get_current_dir());
     }   
     set_current_dir(DIRN_STOP);
@@ -92,7 +92,7 @@ void stop_floor(){
 
 
 void stop_button() {
-    if (get_current_dir() != DIRN_STOP){
+    if (get_current_dir() != DIRN_STOP){ //prevents last_dir to be set to dirn_stop
         set_last_dir(get_current_dir());
     }
     set_current_dir(DIRN_STOP);
