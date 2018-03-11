@@ -7,7 +7,7 @@
 #include "io.h"
 
 /*
-Global variables for the logic modules
+Global variables for the logic module
 */
 int order_matrix[3][4] ={
 //	 1 2 3 4   // Floor    
@@ -26,7 +26,7 @@ int current_dir = 0;
 int last_dir = 0;
 
 /*
-Set and get functions for the global modulevariables
+Set and get functions for the global variables
 */
 void set_current_floor(int floor){
 	current_floor = floor;
@@ -85,7 +85,7 @@ int check_order_above(){
 		}
 	}
 	for (int floor = N_FLOORS-1; floor > get_current_floor(); floor--){
-		if(order_matrix[1][floor] == 1){ //Sjekker for resterende knapper på panelet
+		if(order_matrix[1][floor] == 1){ //checks down-button, starting from the top floor
 			set_next_floor(floor);
 			return 1;
 		}
@@ -101,7 +101,7 @@ int check_order_below(){
 		}
 	}
 	for (int floor = 0; floor < get_current_floor(); floor++){
-		if(order_matrix[0][floor] == 1 ){ //Sjekker resterende knapper på panelet
+		if(order_matrix[0][floor] == 1 ){ //checks up-button, starting from the first floor
 			set_next_floor(floor);
 			return 1;
 		}
@@ -121,7 +121,7 @@ void delete_order(int floor){
 void time_delay(int number_of_seconds){
 	printf("In the delay function \n");
     clock_t start_time = clock();
-    while ( (clock() - start_time)/CLOCKS_PER_SEC < number_of_seconds){
+    while ( (clock() - start_time)/CLOCKS_PER_SEC < number_of_seconds){ //delays the elevator while updating the order_matrix and checking the stop-button
     	check_order();
         if (elev_get_stop_signal()){
         	printf("breaking\n");
@@ -129,8 +129,9 @@ void time_delay(int number_of_seconds){
         }
     }
 }
-//setter next_floor etter hva som er mest gunstig
-void set_priority(){
+
+
+void set_priority(){ //updates next_floor based on the most favorable order given current_floor, last_dir and current_dir
 	if (get_current_dir() == DIRN_UP){
 		check_order_above();
 		return;
@@ -139,8 +140,8 @@ void set_priority(){
 		check_order_below();
 		return;
 	}
-	else if (get_last_dir() == DIRN_UP && get_current_floor() != 3){
-		if (check_order_above()==1){
+	else if (get_last_dir() == DIRN_UP && get_current_floor() != 3){ //prioritze orders above, before optionally checking orders below
+		if (check_order_above()==1){ 
 			return;
 		}
 		else {
@@ -148,7 +149,7 @@ void set_priority(){
 			return;
 		}
 	}
-	else if (get_last_dir() == DIRN_DOWN && get_current_floor() != 0){
+	else if (get_last_dir() == DIRN_DOWN && get_current_floor() != 0){ //prioritze orders below, before optionally checking order above
 		if (check_order_below()==1){
 		return;
 		}
