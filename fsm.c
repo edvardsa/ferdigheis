@@ -9,53 +9,6 @@
 #include "io.h"
 
 
-void move(){
-
-    if (get_next_floor() > get_current_floor()){
-        set_current_dir(DIRN_UP);
-        elev_set_motor_direction(DIRN_UP);    
-    }
-
-    else if(get_next_floor() < get_current_floor()){
-        set_current_dir(DIRN_DOWN);
-        elev_set_motor_direction(DIRN_DOWN);    
-    }
-
-    while(elev_get_floor_sensor_signal() != get_next_floor()) { //drives the elevator until next floor is reached while updating indicator and current floor
-        if (elev_get_stop_signal() == 1){
-            return;
-        }
-        
-        if (elev_get_floor_sensor_signal() == 0 ){
-            set_current_floor(0);
-            elev_set_floor_indicator(0);
-        }
-        else if (elev_get_floor_sensor_signal() == 1 ){
-            set_current_floor(1);
-            elev_set_floor_indicator(1);
-        }
-        else if (elev_get_floor_sensor_signal() == 2 ){
-            set_current_floor(2);
-            elev_set_floor_indicator(2);
-        }
-        else if (elev_get_floor_sensor_signal() == 3 ){
-            set_current_floor(3);
-            elev_set_floor_indicator(3);
-        }
-        
-
-        check_order();
-        set_priority();
-       
-    }
-    
-    if (elev_get_floor_sensor_signal() != -1){
-        set_current_floor(elev_get_floor_sensor_signal());
-        elev_set_floor_indicator(elev_get_floor_sensor_signal());
-    }
-    
-}
-
 
 void start(){
     if(elev_get_floor_sensor_signal() == -1) {
@@ -75,8 +28,55 @@ void start(){
 }
 
 
+void move(){
+	if (get_next_floor() > get_current_floor()){
+        set_current_dir(DIRN_UP);
+        elev_set_motor_direction(DIRN_UP);    
+    }
+
+    else if(get_next_floor() < get_current_floor()){
+        set_current_dir(DIRN_DOWN);
+        elev_set_motor_direction(DIRN_DOWN);    
+    }
+
+    while(elev_get_floor_sensor_signal() != get_next_floor()) { //drives the elevator until next floor is reached while updating indicator and current floor
+        if (elev_get_stop_signal() == 1){
+            return;
+        }
+        
+        if (elev_get_floor_sensor_signal() == 0 ){  
+            set_current_floor(0);
+            elev_set_floor_indicator(0);
+        }
+        else if (elev_get_floor_sensor_signal() == 1 ){
+            set_current_floor(1);
+            elev_set_floor_indicator(1);
+        }
+        else if (elev_get_floor_sensor_signal() == 2 ){
+            set_current_floor(2);
+            elev_set_floor_indicator(2);
+        }
+        else if (elev_get_floor_sensor_signal() == 3 ){
+            set_current_floor(3);
+            elev_set_floor_indicator(3);
+        }
+
+
+        check_order();
+        set_priority();
+       
+    }
+    
+    if (elev_get_floor_sensor_signal() != -1){
+        set_current_floor(elev_get_floor_sensor_signal());
+        elev_set_floor_indicator(elev_get_floor_sensor_signal());
+    }
+    
+}
+
+
+
 void stop_floor(){
-    printf("In stop_floor \n");
     if (get_current_dir() != DIRN_STOP){ //prevents last_dir to be set to dirn_stop
         set_last_dir(get_current_dir());
     }   
@@ -87,7 +87,6 @@ void stop_floor(){
     time_delay(3);
     elev_set_door_open_lamp(0);
     idle();
-    printf("out of stop_floor \n");
 }
 
 
@@ -115,7 +114,7 @@ void stop_button() {
 
     idle();
     
-    //alorithm for choosing direction when between floors if received order is last registered floor
+    //alorithm for choosing direction after stop when between floors
     if (get_current_floor() == get_next_floor()){
         if (get_last_dir() == DIRN_UP && elev_get_floor_sensor_signal() == -1 && get_current_floor() != 3){
             set_current_floor(get_current_floor() +1);

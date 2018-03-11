@@ -5,6 +5,7 @@
 #include <assert.h>
 #include "channels.h"
 #include "io.h"
+#include "fsm.h"
 
 /*
 Global variables for the logic module
@@ -77,6 +78,7 @@ int check_order(){
     return 0;
 }
 
+
 int check_order_above(){
 	for (int floor = get_current_floor(); floor < N_FLOORS; floor++) {
 		if(order_matrix[0][floor] == 1 || order_matrix[2][floor] == 1)  {
@@ -119,12 +121,10 @@ void delete_order(int floor){
 
 
 void time_delay(int number_of_seconds){
-	printf("In the delay function \n");
     clock_t start_time = clock();
-    while ( (clock() - start_time)/CLOCKS_PER_SEC < number_of_seconds){ //delays the elevator while updating the order_matrix and checking the stop-button
+    while ((clock() - start_time)/CLOCKS_PER_SEC < number_of_seconds){ //delays the elevator while updating the order_matrix and checking the stop-button
     	check_order();
         if (elev_get_stop_signal()){
-        	printf("breaking\n");
             break;
         }
     }
