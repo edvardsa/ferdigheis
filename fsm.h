@@ -17,7 +17,7 @@ void stop_floor();
 // sets idle state
 void stop_button();
 
-// idle state. Check orders while sum_orders = 0
+// idle state. Check orders while sum_orders = 0. Calls set_priority when a new order is issued
 void idle();
 
 #endif
